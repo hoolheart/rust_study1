@@ -44,10 +44,59 @@ impl IpAddr {
             IpAddr::V6(..) => 6,
         }
     }
-    pub fn to_string(&self) -> String {
+}
+
+impl ToString for IpAddr {
+    fn to_string(&self) -> String {
         match self {
             IpAddr::V4(x0, x1, x2, x3) => format!("{}.{}.{}.{}", x0, x1, x2, x3),
             IpAddr::V6(x0, x1, x2, x3, x4, x5, x6, x7) => format!("{:04X}:{:04X}:{:04X}:{:04X}:{:04X}:{:04X}:{:04X}:{:04X}", x0, x1, x2, x3, x4, x5, x6, x7),
         }
+    }
+}
+
+#[derive(Debug)]
+pub struct Rectangle {
+    pub width: u32,
+    pub height: u32,
+}
+
+impl Rectangle {
+    pub fn can_hold(&self, other: &Rectangle) -> bool {
+        (self.width >= other.width) && (self.height >= other.height)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn test_user() {
+        let result = 2 + 2;
+        assert_eq!(result, 4);
+        let user1 = super::User::register("aaa", "aaa@ll.com");
+        assert_eq!(user1.valid(), true);
+        let mut user2 = super::User::register("", "a@l.com");
+        assert_eq!(user2.valid(), false);
+        user2.name = String::from("oh");
+        assert_eq!(user2.valid(), true);
+        for _ in 0..10 {
+            user2.increase();
+        }
+        assert_eq!(user2.count_sign_in(), 11);
+        user2.withdraw();
+        assert_eq!(user2.valid(), false);
+    }
+
+    #[test]
+    fn test_rectangle() {
+        let rect0 = super::Rectangle{
+            width: 100,
+            height: 70,
+        };
+        let rect1 = super::Rectangle{
+            width: 60,
+            height: 70,
+        };
+        assert!(rect0.can_hold(&rect1));
     }
 }
